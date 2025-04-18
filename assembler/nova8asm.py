@@ -1,8 +1,8 @@
 from enum import IntEnum
 
-# FILE_PATH = "./assembler/loop.v8asm"
-# FILE_PATH = "./assembler/call.v8asm"
-FILE_PATH = "./assembler/add_x_y.v8asm"
+# FILE_PATH = "./programs/loop.v8asm"
+# FILE_PATH = "./programs/call.v8asm"
+FILE_PATH = "./programs/add_x_y.v8asm"
 
 
 class Registers(IntEnum):
