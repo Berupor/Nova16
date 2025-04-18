@@ -1,0 +1,11 @@
+MOVI A, 10        
+MOVI B, 5
+
+loop:
+  DEC A       
+  CMP A, B       
+  JZ end         
+  JMP loop       
+
+end:
+  HLT

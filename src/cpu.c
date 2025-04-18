@@ -1,6 +1,7 @@
 #include "cpu.h"
 #include "stack.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 // Registers
 enum { REG_A = 0x00, REG_B = 0x01 };
@@ -13,6 +14,8 @@ enum {
   POP = 0x11,
   ADD = 0x20,
   SUB = 0x21,
+  INC = 0x22,
+  DEC = 0x23,
   CMP = 0x30,
   JMP = 0x40,
   JZ = 0x41,
@@ -110,6 +113,34 @@ void run(CPU *cpu) {
       if (dst && src) {
         *dst -= *src;
       }
+      break;
+    }
+
+    case INC: {
+      uint8_t reg = fetch(cpu);
+
+      uint8_t *reg_ptr = get_reg_ptr(cpu, reg);
+
+      if (!reg_ptr) {
+        printf("INC: unknown register %d at PC=%02X\n", reg, cpu->pc - 1);
+        exit(1);
+      }
+
+      *reg_ptr += 1;
+      break;
+    }
+
+    case DEC: {
+      uint8_t reg = fetch(cpu);
+
+      uint8_t *reg_ptr = get_reg_ptr(cpu, reg);
+
+      if (!reg_ptr) {
+        printf("DEC: unknown register %d at PC=%02X\n", reg, cpu->pc - 1);
+        exit(1);
+      }
+
+      *reg_ptr -= 1;
       break;
     }
 

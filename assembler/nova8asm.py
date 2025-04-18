@@ -1,8 +1,9 @@
 from enum import IntEnum
 
 # FILE_PATH = "./programs/loop.v8asm"
+FILE_PATH = "./programs/loop_2.v8asm"
 # FILE_PATH = "./programs/call.v8asm"
-FILE_PATH = "./programs/add_x_y.v8asm"
+# FILE_PATH = "./programs/add_x_y.v8asm"
 
 
 class Registers(IntEnum):
@@ -17,6 +18,8 @@ class Opcodes(IntEnum):
     POP = 0x11
     ADD = 0x20
     SUB = 0x21
+    INC = 0x22
+    DEC = 0x23
     CMP = 0x30
     JMP = 0x40
     JZ = 0x41
@@ -92,6 +95,14 @@ def assembler_to_bytes():
             result.append(Opcodes.SUB.value)
             result.append(get_register_addr_by_name(line[1]))
             result.append(get_register_addr_by_name(line[2]))
+
+        elif opcode == Opcodes.INC.name:
+            result.append(Opcodes.INC.value)
+            result.append(get_register_addr_by_name(line[1]))
+
+        elif opcode == Opcodes.DEC.name:
+            result.append(Opcodes.DEC.value)
+            result.append(get_register_addr_by_name(line[1]))
 
         elif opcode == Opcodes.CMP.name:
             result.append(Opcodes.CMP.value)
