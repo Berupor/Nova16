@@ -22,6 +22,8 @@ enum {
   NOP = 0xF0,
   CALL = 0x50,
   RET = 0x51,
+  PRINT = 0x60,
+  READ = 0x61,
   HLT = 0xFF,
 };
 
@@ -190,6 +192,18 @@ void run(CPU *cpu) {
       uint8_t return_addr = pop(cpu);
 
       cpu->pc = return_addr;
+      break;
+    }
+
+    case PRINT: {
+      uint8_t reg = fetch(cpu);
+      printf("%d\n", *get_reg_ptr(cpu, reg));
+      break;
+    }
+
+    case READ: {
+      uint8_t reg = fetch(cpu);
+      scanf("%hhu", get_reg_ptr(cpu, reg));
       break;
     }
 
