@@ -4,13 +4,9 @@ tasks:
   run:
     desc: Ассемблирует .asm, компилирует C и запускает
     cmds:
-      - python3 assembler/nova8asm.py assembler/program.v8asm bin/program.bin
-      - gcc main.c -o _run_temp
+      - python3 assembler/nova8asm.py assembler/call.v8asm bin/program.bin
+      - gcc main.c cpu.c stack.c -o _run_temp
       - ./_run_temp
-    sources:
-      - program.v8asm
-      - nova8asm.py
-      - main.c
 
   crun:
     desc: Запускает процессор отедльно

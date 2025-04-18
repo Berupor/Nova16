@@ -1,0 +1,15 @@
+MOVI A, 5
+PUSH A         
+
+MOVI A, 7
+PUSH A         
+
+CALL add_xy
+MOV B, A      
+HLT
+
+add_xy:
+  POP B        
+  POP A        
+  ADD A, B     
+  RET

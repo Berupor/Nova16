@@ -1,0 +1,7 @@
+CALL sub
+MOVI A, 99
+HLT
+
+sub:
+  MOVI A, 42
+  RET

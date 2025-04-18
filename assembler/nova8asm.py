@@ -1,20 +1,13 @@
 from enum import IntEnum
 
-FILE_PATH = "./assembler/loop.v8asm"
+# FILE_PATH = "./assembler/loop.v8asm"
+# FILE_PATH = "./assembler/call.v8asm"
+FILE_PATH = "./assembler/add_x_y.v8asm"
 
 
 class Registers(IntEnum):
     A = 0x00
     B = 0x01
-
-
-def get_register_addr_by_name(name: str) -> int:
-    if name == Registers.A.name:
-        return Registers.A.value
-    elif name == Registers.B.name:
-        return Registers.B.value
-    else:
-        raise Exception(f"unkown register: {name}")
 
 
 class Opcodes(IntEnum):
@@ -27,8 +20,19 @@ class Opcodes(IntEnum):
     CMP = 0x30
     JMP = 0x40
     JZ = 0x41
+    CALL = 0x50
+    RET = 0x51
     NOP = 0xF0
     HLT = 0xFF
+
+
+def get_register_addr_by_name(name: str) -> int:
+    if name == Registers.A.name:
+        return Registers.A.value
+    elif name == Registers.B.name:
+        return Registers.B.value
+    else:
+        raise Exception(f"unkown register: {name}")
 
 
 def assembler_to_bytes():
@@ -108,12 +112,23 @@ def assembler_to_bytes():
             except ValueError:
                 result.append(label_map[line[1]])
 
+        elif opcode == Opcodes.CALL.name:
+            result.append(Opcodes.CALL.value)
+            try:
+                result.append(int(line[1], 0))
+            except ValueError:
+                result.append(label_map[line[1]])
+
+        elif opcode == Opcodes.RET.name:
+            result.append(Opcodes.RET.value)
+
         elif opcode == Opcodes.NOP.name:
             result.append(Opcodes.NOP.value)
 
         elif opcode == Opcodes.HLT.name:
             result.append(Opcodes.HLT.value)
 
+    print(result)
     print(label_map)
     f = open("bin/program.bin", "wb")
     f.write(bytes(result))

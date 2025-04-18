@@ -17,6 +17,8 @@ enum {
   JMP = 0x40,
   JZ = 0x41,
   NOP = 0xF0,
+  CALL = 0x50,
+  RET = 0x51,
   HLT = 0xFF,
 };
 
@@ -32,23 +34,6 @@ uint8_t *get_reg_ptr(CPU *cpu, uint8_t reg) {
     return NULL;
   }
 }
-
-// void push(CPU *cpu, uint8_t value) {
-//   if (cpu->sp == 0) {
-//     printf("Stack overflow\n");
-//     return;
-//   }
-//   cpu->sp--;
-//   cpu->stack[cpu->sp] = value;
-// }
-
-// uint8_t pop(CPU *cpu) {
-//   if (cpu->sp == STACK_SIZE) {
-//     printf("Stack underflow\n");
-//     return 0;
-//   }
-//   return cpu->stack[cpu->sp++];
-// }
 
 void run(CPU *cpu) {
   int running = 1;
@@ -157,6 +142,23 @@ void run(CPU *cpu) {
       if (cpu->zf == 1) {
         cpu->pc = jmp_addr;
       }
+      break;
+    }
+
+    case CALL: {
+      uint8_t subprogram_addr = fetch(cpu);
+
+      uint8_t return_addr = cpu->pc;
+      push(cpu, return_addr);
+
+      cpu->pc = subprogram_addr;
+      break;
+    }
+
+    case RET: {
+      uint8_t return_addr = pop(cpu);
+
+      cpu->pc = return_addr;
       break;
     }
 
