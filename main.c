@@ -196,7 +196,7 @@ int main() {
   CPU cpu = {0};
   cpu.sp = STACK_SIZE;
 
-  FILE *f = fopen("program.bin", "rb");
+  FILE *f = fopen("bin/program.bin", "rb");
   if (!f) {
     perror("File open failed");
     exit(1);
