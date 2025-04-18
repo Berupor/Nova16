@@ -1,6 +1,6 @@
 from enum import IntEnum
 
-FILE_PATH = "./assembler/program.v8asm"
+FILE_PATH = "./assembler/loop.v8asm"
 
 
 class Registers(IntEnum):

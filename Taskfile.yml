@@ -11,3 +11,9 @@ tasks:
       - program.v8asm
       - nova8asm.py
       - main.c
+
+  crun:
+    desc: Запускает процессор отедльно
+    cmds:
+      - gcc main.c cpu.c stack.c -o _run_temp
+      - ./_run_temp
