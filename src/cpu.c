@@ -1,4 +1,4 @@
-#include "cpu.h"
+#include "../include/cpu.h"
 #include "stack.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +27,8 @@ enum {
   HLT = 0xFF,
 };
 
-uint8_t fetch(CPU *cpu) { return cpu->memory[cpu->pc++]; }
+uint8_t fetch(CPU *cpu) { return mem_read(cpu->memory, cpu->pc++); }
+// uint8_t fetch(CPU *cpu) { return cpu->memory[cpu->pc++]; }
 
 uint8_t *get_reg_ptr(CPU *cpu, uint8_t reg) {
   switch (reg) {
