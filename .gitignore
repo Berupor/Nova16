@@ -2,3 +2,5 @@ _run_temp
 .task
 bin
 testing
+.vscode
+.DS_Store
