@@ -1,1 +1,1 @@
-## Примеры программ на ассемблере nova8
+## Examples of programs on the assembler nova8
