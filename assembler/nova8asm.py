@@ -1,11 +1,13 @@
 from enum import IntEnum
 
-# FILE_PATH = "./programs/loop.v8asm"
-# FILE_PATH = "./programs/loop_2.v8asm"
-# FILE_PATH = "./programs/call.v8asm"
-# FILE_PATH = "./programs/add_x_y.v8asm"
-FILE_PATH = "./programs/io_input.v8asm"
-# FILE_PATH = "./programs/io_output.v8asm"
+# INPUT_FILE = "./programs/loop.v8asm"
+# INPUT_FILE = "./programs/loop_2.v8asm"
+# INPUT_FILE = "./programs/call.v8asm"
+INPUT_FILE = "./programs/add_x_y.v8asm"
+# INPUT_FILE = "./programs/io_input.v8asm"
+# INPUT_FILE = "./programs/io_output.v8asm"
+
+OUTPUT_FILE = "./bin/program.bin"
 
 
 class Registers(IntEnum):
@@ -44,7 +46,7 @@ def get_register_addr_by_name(name: str) -> int:
 def assembler_to_bytes():
     result = []
 
-    f = open(FILE_PATH, "r")
+    f = open(INPUT_FILE, "r")
     program_bytes = 0
     label_map = {}
 
@@ -60,7 +62,7 @@ def assembler_to_bytes():
 
         program_bytes += len(line_2)
 
-    f = open(FILE_PATH, "r")
+    f = open(INPUT_FILE, "r")
     for line in f:
         line = line.strip()
         if not line or line.startswith(";"):
@@ -145,9 +147,7 @@ def assembler_to_bytes():
         elif opcode == Opcodes.HLT.name:
             result.append(Opcodes.HLT.value)
 
-    print(result)
-    print(label_map)
-    f = open("bin/program.bin", "wb")
+    f = open(OUTPUT_FILE, "wb")
     f.write(bytes(result))
     f.close()
 

@@ -1,29 +1,34 @@
-## v0.1 (Начальный набор)
+# Instruction Set
 
-| Опкод  | Имя             | Формат           | Описание                                      |
-|--------|-----------------|------------------|-----------------------------------------------|
-| `0x01` | `MOV dst, src`  | `[OP][dst][src]` | Копирует значение из одного регистра в другой |
-| `0x02` | `MOVI reg, val` | `[OP][reg][imm]` | Записывает немедленное значение в регистр     |
-| `0x10` | `PUSH reg`      | `[OP][reg]`      | Кладёт значение регистра на стек              |
-| `0x11` | `POP reg`       | `[OP][reg]`      | Снимает со стека в регистр                    |
-| `0x20` | `ADD dst, src`  | `[OP][dst][src]` | Складывает значения и пишет в `dst`           |
-| `0x21` | `SUB dst, src`  | `[OP][dst][src]` | Вычитает `src` из `dst`                       |
-| `0x30` | `CMP a, b`      | `[OP][a][b]`     | Устанавливает ZF, если `a == b`               |
-| `0x40` | `JMP addr`      | `[OP][addr]`     | Безусловный переход                           |
-| `0x41` | `JZ addr`       | `[OP][addr]`     | Переход, если ZF == 1                         |
-| `0xF0` | `NOP`           | `[OP]`           | Пустая инструкция                             |
-| `0xFF` | `HLT`           | `[OP]`           | Остановить исполнение                         |
+## v0.1 (Basic Instruction Set)
 
-## v0.2 (Доработка цилков)
+| Opcode | Name            | Format           | Description                                    |
+|--------|-----------------|------------------|------------------------------------------------|
+| `0x01` | `MOV dst, src`  | `[OP][dst][src]` | Copies the value from one register to another  |
+| `0x02` | `MOVI reg, val` | `[OP][reg][imm]` | Loads an immediate value into a register       |
+| `0x10` | `PUSH reg`      | `[OP][reg]`      | Pushes the value of a register onto the stack  |
+| `0x11` | `POP reg`       | `[OP][reg]`      | Pops a value from the stack into a register    |
+| `0x20` | `ADD dst, src`  | `[OP][dst][src]` | Adds two register values and stores in `dst`   |
+| `0x21` | `SUB dst, src`  | `[OP][dst][src]` | Subtracts `src` from `dst` and stores in `dst` |
+| `0x30` | `CMP a, b`      | `[OP][a][b]`     | Sets `ZF` if values in `a` and `b` are equal   |
+| `0x40` | `JMP addr`      | `[OP][addr]`     | Unconditional jump to address                  |
+| `0x41` | `JZ addr`       | `[OP][addr]`     | Jump if `ZF == 1`                              |
+| `0xF0` | `NOP`           | `[OP]`           | No operation                                   |
+| `0xFF` | `HLT`           | `[OP]`           | Halts execution                                |
 
-| Опкод  | Имя    | Формат       | Описание                           |
-|--------|--------|--------------|------------------------------------|
-| `0x22` | `INC`  | `[OP][reg]`  | Увеличивает значение регистра на 1 |
-| `0x23` | `DEC`  | `[OP][reg]`  | Уменьшает значение регистра на 1   |
-| `0x50` | `CALL` | `[OP][addr]` | Положить return-addr, прыгнуть     |
-| `0x51` | `RET`  | `[OP]`       | Достать return-addr, прыгнуть      |
+## v0.2 (Control Flow and Loops)
+
+| Opcode | Name   | Format       | Description                               |
+|--------|--------|--------------|-------------------------------------------|
+| `0x22` | `INC`  | `[OP][reg]`  | Increments the value of a register by 1   |
+| `0x23` | `DEC`  | `[OP][reg]`  | Decrements the value of a register by 1   |
+| `0x50` | `CALL` | `[OP][addr]` | Pushes return address and jumps to `addr` |
+| `0x51` | `RET`  | `[OP]`       | Pops return address and jumps back        |
 
 ## v0.3 (SYSCALL)
-| Опкод  | Имя       | Формат | Описание                                                                        |
-|--------|-----------|--------|---------------------------------------------------------------------------------|
-| `0x70` | `SYSCALL` | `[OP]` | Делает вызов системной функции. Код вызова — в `B`, аргументы и возврат — в `A` |
+
+| Opcode | Name      | Format | Description                                                                |
+|--------|-----------|--------|----------------------------------------------------------------------------|
+| `0x70` | `SYSCALL` | `[OP]` | Triggers a system call. Syscall number in `B`, arguments and return in `A` |
+
+

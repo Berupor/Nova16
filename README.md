@@ -1,71 +1,51 @@
+# nova8 — a virtual 8-bit processor
 
-# nova8 — виртуальный 8-битный процессор
+Started as a simple CPU and grew into a minimal virtual computing system.
 
-Мой проект для изучения архитектуры процессоров.
+## Features
 
-Цель — сделать минималистичный, понятный, но реалистичный 8-битный процессор:
-- 2 регистра (A, B)
-- 256 байт памяти
-- 16-байтный стек
-- байткод с опкодами типа `MOV`, `ADD`, `JMP`, `CALL`, `RET`
-- ассемблер на Python (`.v8asm → .bin`)
+- 2 registers (`A`, `B`)
+- 256 bytes of memory
+- 16-byte stack
+- basic heap with `MALLOC` / `FREE`
+- custom bytecode: `MOV`, `ADD`, `JMP`, `CALL`, `RET`, `CMP`, `SYSCALL`
+- Assembler (`.v8asm → .bin`)
+- kernel subsystem for system calls (`print`, `read`, `exit`)
 
-## Структура
+## Project structure
 
-- `main.c`, `cpu.c`, `stack.c`, ... — сама виртуальная машина
-- `assembler/` — мой ассемблер на питоне
-- `programs/` — тестовые `.v8asm` программы
-- `bin/` — скомпилированные `.bin` файлы
-- `Taskfile.yml` — сборка и запуск одной командой
+```
+assembler/     # the assembler (Python)
+src/           # virtual machine (CPU, memory, stack, kernel)
+include/       # headers
+programs/      # .v8asm test programs
+Taskfile.yml   # build & run automation
+```
 
-## Быстрый старт
+## Quick start
 
 ```bash
 task run
 ```
 
-Собирает `.v8asm` → `.bin`, компилирует C и запускает программу на моей VM.
+Compiles `.v8asm` → `.bin`, builds the VM and runs the program.
 
-## Пример программы (v8asm)
+## Example program (.v8asm)
 
 ```asm
 MOVI A, 5
 MOVI B, 7
 ADD A, B
+MOVI B, 0x01
+SYSCALL       ; print A
 HLT
 ```
 
-## Зачем это всё
+## Why
 
-Пишу для себя, чтобы разобраться, как вообще работают процессоры, как устроены регистры, стек, байткод, и как на это всё можно повесить язык программирования.
+To understand how things work under the hood — registers, stack, bytecode, memory — and how it all comes together into a working architecture.
 
-```
-             ________________________________________________
-            /                                                \
-           |    _________________________________________     |
-           |   |                                         |    |
-           |   |  $ nova8                                |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |                                         |    |
-           |   |_________________________________________|    |
-           |                                                  |
-            \_________________________________________________/
-                   \___________________________________/
-                ___________________________________________
-             _-'    .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.  --- `-_
-          _-'.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.--.  .-.-.`-_
-       _-'.-.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-`__`. .-.-.-.`-_
-    _-'.-.-.-.-. .-----.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-----. .-.-.-.-.`-_
- _-'.-.-.-.-.-. .---.-. .-------------------------. .-.---. .---.-.-.-.`-_
-:-------------------------------------------------------------------------:
-`---._.-------------------------------------------------------------._.---'
-```                              
+## Documentation
+
+- [Instruction Set / Opcodes](documentation/opcode_table.md)
+- [Syscall ABI](documentation/syscall_abi.md)

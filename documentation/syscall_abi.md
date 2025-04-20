@@ -1,41 +1,40 @@
 # Syscall ABI
 
-Nova8 не содержит встроенных инструкций для работы с вводом-выводом, завершением программы и другими функциями, выходящими за рамки ответственности процессора.
+Nova8 doesn't include built-in instructions for I/O, program exit, or other OS-level features.  
+Instead, it uses a separate syscall mechanism — similar to real architectures.
 
-Вместо этого используется отдельный механизм системных вызовов (`SYSCALL`) — как в реальных архитектурах.
+`SYSCALL` is a special instruction that transfers control to the runtime kernel.  
+Its behavior depends on the value in register `B` (the syscall number).  
+Arguments and return values are passed through registers.
 
-`SYSCALL` — это специальная инструкция, которая передаёт управление среде выполнения. Поведение зависит от значения в регистре `B` (код вызова). Аргументы и возвращаемые значения передаются через регистры.
+### Register convention:
 
-### Регистр протокола:
+| Register | Purpose                      |
+|----------|------------------------------|
+| `B`      | Syscall number               |
+| `A`      | First argument and/or return |
 
-| Регистр | Назначение                    |
-|---------|-------------------------------|
-| `B`     | Номер системного вызова       |
-| `A`     | Первый аргумент и/или возврат |
+### Syscall Table (v0.1):
 
-### Таблица вызовов (v0.1):
+| Code | Name    | Args | Return | Description                     |
+|------|---------|------|--------|---------------------------------|
+| `01` | `print` | `A`  | —      | Prints the value in `A`         |
+| `02` | `read`  | —    | `A`    | Reads a number from stdin       |
+| `03` | `exit`  | `A`  | —      | Exits the program with code `A` |
 
-| Код  | Имя     | Аргументы | Возврат | Описание                      |
-|------|---------|-----------|---------|-------------------------------|
-| `01` | `print` | `A`       | —       | Выводит значение регистра `A` |
-| `02` | `read`  | —         | `A`     | Считывает число из stdin      |
-| `03` | `exit`  | `A`       | —       | Завершает программу с кодом   |
-
-### Пример
+### Example
 
 ```asm
-; вывести число
+; print number
 MOVI A, 42
 MOVI B, 0x01
 SYSCALL
 
-; считать число
+; read number into A
 MOVI B, 0x02
 SYSCALL
-; теперь A содержит ввод
 
-; завершить программу
+; exit with code 0
 MOVI A, 0
 MOVI B, 0x03
 SYSCALL
-```

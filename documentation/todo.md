@@ -1,3 +1,3 @@
-1. Перейти на jump table вместо switch
-2. Сделать нормальный nova8asm.py
-3. Сделать единую точку истины по опкодам
+1. Replace switch to jump table
+2. Refactor nova8asm.py
+3. Make a single point of truth with opcodes
