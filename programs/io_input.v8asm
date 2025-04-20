@@ -1,0 +1,4 @@
+MOVI B, 0x02
+SYSCALL
+
+HLT

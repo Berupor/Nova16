@@ -1,4 +1,6 @@
-#include "../include/cpu.h"
+#include "cpu.h"
+#include "heap.h"
+#include "kernel/kernel.h"
 #include "stack.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,8 +24,7 @@ enum {
   NOP = 0xF0,
   CALL = 0x50,
   RET = 0x51,
-  PRINT = 0x60,
-  READ = 0x61,
+  SYSCALL = 0x70,
   HLT = 0xFF,
 };
 
@@ -196,15 +197,10 @@ void run(CPU *cpu) {
       break;
     }
 
-    case PRINT: {
-      uint8_t reg = fetch(cpu);
-      printf("%d\n", *get_reg_ptr(cpu, reg));
-      break;
-    }
+    case SYSCALL: {
+      uint8_t syscall_number = cpu->reg_b;
+      kernel_handle(syscall_number, cpu, cpu->memory);
 
-    case READ: {
-      uint8_t reg = fetch(cpu);
-      scanf("%hhu", get_reg_ptr(cpu, reg));
       break;
     }
 
