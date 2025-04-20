@@ -1,11 +1,8 @@
 # Syscall ABI
 
-Nova8 doesn't include built-in instructions for I/O, program exit, or other OS-level features.  
-Instead, it uses a separate syscall mechanism — similar to real architectures.
+Nova8 doesn't include built-in instructions for I/O, program exit, or other OS-level features. Instead, it uses a separate syscall mechanism — similar to real architectures.
 
-`SYSCALL` is a special instruction that transfers control to the runtime kernel.  
-Its behavior depends on the value in register `B` (the syscall number).  
-Arguments and return values are passed through registers.
+`SYSCALL` is a special instruction that transfers control to the runtime kernel. Its behavior depends on the value in register `B` (the syscall number). Arguments and return values are passed through registers.
 
 ### Register convention:
 
