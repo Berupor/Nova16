@@ -4,6 +4,7 @@
 #include "stack.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 // Registers
 enum { REG_A = 0x00, REG_B = 0x01 };
@@ -29,7 +30,6 @@ enum {
 };
 
 uint8_t fetch(CPU *cpu) { return mem_read(cpu->memory, cpu->pc++); }
-// uint8_t fetch(CPU *cpu) { return cpu->memory[cpu->pc++]; }
 
 uint8_t *get_reg_ptr(CPU *cpu, uint8_t reg) {
   switch (reg) {
@@ -47,9 +47,10 @@ void run(CPU *cpu) {
 
   while (running) {
     uint8_t opcode = fetch(cpu);
+
     printf("PC=%02X OPCODE=%02X A=%d B=%d SP=%d ZF=%d\n", cpu->pc - 1, opcode,
            cpu->reg_a, cpu->reg_b, cpu->sp, cpu->zf);
-
+    // sleep(1);
     switch (opcode) {
 
     case MOV: {
@@ -182,11 +183,10 @@ void run(CPU *cpu) {
 
     case CALL: {
       uint8_t subprogram_addr = fetch(cpu);
-
       uint8_t return_addr = cpu->pc;
       push(cpu, return_addr);
-
       cpu->pc = subprogram_addr;
+
       break;
     }
 

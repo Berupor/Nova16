@@ -1,11 +1,7 @@
 from enum import IntEnum
+from time import sleep
 
-# INPUT_FILE = "./programs/loop.v8asm"
-# INPUT_FILE = "./programs/loop_2.v8asm"
-# INPUT_FILE = "./programs/call.v8asm"
-INPUT_FILE = "./programs/add_x_y.v8asm"
-# INPUT_FILE = "./programs/io_input.v8asm"
-# INPUT_FILE = "./programs/io_output.v8asm"
+INPUT_FILE = "./programs/main.v8asm"
 
 OUTPUT_FILE = "./bin/program.bin"
 
@@ -43,26 +39,37 @@ def get_register_addr_by_name(name: str) -> int:
         raise Exception(f"unkown register: {name}")
 
 
-def assembler_to_bytes():
-    result = []
-
-    f = open(INPUT_FILE, "r")
+def create_label_map(files: list[str]):
     program_bytes = 0
     label_map = {}
 
-    for line in f:
-        line = line.strip()
+    for filename in files:
+        f = open(filename, "r")
 
-        line_2 = line.replace(",", "")
-        line_2 = line.split(" ")
+        for line in f:
+            line = line.strip()
+            if line.startswith("INCLUDE") or line.startswith("ENTRY"):
+                continue
 
-        if line.endswith(":"):
-            label_map[line.replace(":", "")] = program_bytes - 1
-            continue
+            line_2 = line.replace(",", "")
+            line_2 = line.split(" ")
 
-        program_bytes += len(line_2)
+            if line.endswith(":"):
+                label = line.replace(":", "")
+                label_map[label] = program_bytes
+                continue
 
-    f = open(INPUT_FILE, "r")
+            if line_2 != [""]:
+                program_bytes += len(line_2)
+
+        f.close()
+
+    return label_map
+
+
+def assemble_file_to_bytes(filename: str, label_map: dict):
+    result = []
+    f = open(filename, "r")
     for line in f:
         line = line.strip()
         if not line or line.startswith(";"):
@@ -147,9 +154,73 @@ def assembler_to_bytes():
         elif opcode == Opcodes.HLT.name:
             result.append(Opcodes.HLT.value)
 
-    f = open(OUTPUT_FILE, "wb")
-    f.write(bytes(result))
-    f.close()
+    return result
+
+
+def assembler_to_bytes():
+    includes = []
+    with open(INPUT_FILE, "r") as f:
+        lines = f.readlines()
+
+        program_bytes = 0
+        label_map = {}
+
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith(";"):
+                continue
+
+            if line.startswith("INCLUDE"):
+                path = line.split(" ", 1)[1].strip().strip('"')
+                includes.append(path)
+                continue
+
+            tokens = line.replace(",", "").split()
+
+            if tokens[0].endswith(":"):
+                label = tokens[0].replace(":", "")
+                label_map[label] = program_bytes
+                continue
+
+            program_bytes += len(tokens)
+
+    label_map = create_label_map(includes + [INPUT_FILE])
+
+    result = []
+    for filename in includes + [INPUT_FILE]:
+        result.extend(assemble_file_to_bytes(filename, label_map))
+
+    with open(INPUT_FILE, "r") as f:
+        lines = f.readlines()
+
+        for line in lines:
+            line = line.strip()
+            if line.startswith("ENTRY"):
+                line = line.split(": ")
+                ENTRY = label_map[line[1]]
+
+    output_bytes = bytearray()
+    # MAGIC_1
+    output_bytes.append(0xDE)
+    # MAGIC_2
+    output_bytes.append(0xAD)
+    # VERSION
+    output_bytes.append(0x01)
+    # ENTRY
+    output_bytes.append(ENTRY)
+    # CODESIZE
+    output_bytes.append(len(result))
+    # RESERVED
+    output_bytes += bytes([0x00, 0x00, 0x00])
+
+    output_bytes.extend(result)
+    with open(OUTPUT_FILE, "wb") as f:
+        f.write(output_bytes)
+
+    hex_output = " ".join([f"{byte:02x}" for byte in output_bytes])
+    print(label_map)
+    print(ENTRY)
+    print(hex_output)
 
 
 if __name__ == "__main__":

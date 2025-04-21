@@ -1,0 +1,4 @@
+add_3:
+  MOVI B, 3
+  ADD A, B
+  RET

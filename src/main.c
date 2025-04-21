@@ -15,7 +15,22 @@ int main() {
     perror("File open failed");
     exit(1);
   }
-  fread(cpu.memory, 1, MEMORY_SIZE, f);
+
+  uint8_t header[8];
+  fread(header, 1, 8, f);
+
+  if (header[0] != 0xDE || header[1] != 0xAD) {
+    printf("Invalid binary format\n");
+    exit(1);
+  }
+
+  uint8_t version = header[2];
+  uint8_t entry_point = header[3];
+
+  fread(cpu.memory->data, 1, MEMORY_SIZE, f);
+  cpu.pc = entry_point;
+  printf("%d PC\n", cpu.pc);
+
   fclose(f);
 
   run(&cpu);
