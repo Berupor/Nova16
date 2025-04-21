@@ -49,3 +49,4 @@ To understand how things work under the hood — registers, stack, bytecode, mem
 
 - [Instruction Set / Opcodes](documentation/opcode_table.md)
 - [Syscall ABI](documentation/syscall_abi.md)
+- [Binary format](documentation/binary_format.md)
