@@ -1,4 +1,4 @@
 add_3:
-  MOVI B, 3
-  ADD A, B
+  MOVI R1, 3
+  ADD R0, R1
   RET

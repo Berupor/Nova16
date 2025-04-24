@@ -2,36 +2,36 @@
 
 Nova8 doesn't include built-in instructions for I/O, program exit, or other OS-level features. Instead, it uses a separate syscall mechanism — similar to real architectures.
 
-`SYSCALL` is a special instruction that transfers control to the runtime kernel. Its behavior depends on the value in register `B` (the syscall number). Arguments and return values are passed through registers.
+`SYSCALL` is a special instruction that transfers control to the runtime kernel. Its behavior depends on the value in register `R1` (the syscall number). Arguments and return values are passed through registers.
 
 ### Register convention:
 
 | Register | Purpose                      |
 |----------|------------------------------|
-| `B`      | Syscall number               |
-| `A`      | First argument and/or return |
+| `R1`     | Syscall number               |
+| `R0`     | First argument and/or return |
 
 ### Syscall Table (v0.1):
 
-| Code | Name    | Args | Return | Description                     |
-|------|---------|------|--------|---------------------------------|
-| `01` | `print` | `A`  | —      | Prints the value in `A`         |
-| `02` | `read`  | —    | `A`    | Reads a number from stdin       |
-| `03` | `exit`  | `A`  | —      | Exits the program with code `A` |
+| Code   | Name    | Args | Return | Description                      |
+|--------|---------|------|--------|----------------------------------|
+| `0x01` | `print` | `R0` | —      | Prints the value in `R0`         |
+| `0x02` | `read`  | —    | `R0`   | Reads a number from stdin        |
+| `0x03` | `exit`  | `R0` | —      | Exits the program with code `R0` |
 
 ### Example
 
 ```asm
 ; print number
-MOVI A, 42
-MOVI B, 0x01
+MOVI R0, 42
+MOVI R1, 0x01
 SYSCALL
 
-; read number into A
-MOVI B, 0x02
+; read number into R0
+MOVI R1, 0x02
 SYSCALL
 
 ; exit with code 0
-MOVI A, 0
-MOVI B, 0x03
+MOVI R0, 0
+MOVI R1, 0x03
 SYSCALL

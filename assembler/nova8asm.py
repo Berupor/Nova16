@@ -1,14 +1,20 @@
 from enum import IntEnum
 from time import sleep
 
-INPUT_FILE = "./programs/main.v8asm"
+
+INPUT_FILE = "./programs/load_store.v8asm"
 
 OUTPUT_FILE = "./bin/program.bin"
 
 
+class UnkownRegister(Exception): ...
+
+
 class Registers(IntEnum):
-    A = 0x00
-    B = 0x01
+    R0 = 0x00
+    R1 = 0x01
+    R2 = 0x02
+    R3 = 0x03
 
 
 class Opcodes(IntEnum):
@@ -26,17 +32,23 @@ class Opcodes(IntEnum):
     CALL = 0x50
     RET = 0x51
     SYSCALL = 0x70
+    LOAD = 0x60
+    STORE = 0x61
     NOP = 0xF0
     HLT = 0xFF
 
 
 def get_register_addr_by_name(name: str) -> int:
-    if name == Registers.A.name:
-        return Registers.A.value
-    elif name == Registers.B.name:
-        return Registers.B.value
+    if name == Registers.R0.name:
+        return Registers.R0.value
+    elif name == Registers.R1.name:
+        return Registers.R1.value
+    elif name == Registers.R2.name:
+        return Registers.R2.value
+    elif name == Registers.R3.name:
+        return Registers.R3.value
     else:
-        raise Exception(f"unkown register: {name}")
+        raise UnkownRegister(f"unkown register: {name}")
 
 
 def create_label_map(files: list[str]):
@@ -48,6 +60,18 @@ def create_label_map(files: list[str]):
 
         for line in f:
             line = line.strip()
+            if line.startswith("INCLUDE") and line.endswith('.v8inc"'):
+                path = line.split(" ", 1)[1].strip().strip('"')
+
+                with open(path, "r") as f_2:
+                    # сброка .v8inc
+                    lines_2 = f_2.readlines()
+                    for line_2 in lines_2:
+                        line_2 = line_2.replace(" ", "").split("=")
+                        key = line_2[0]
+                        value = line_2[1]
+                        label_map[key] = int(value, 0)
+
             if line.startswith("INCLUDE") or line.startswith("ENTRY"):
                 continue
 
@@ -88,7 +112,10 @@ def assemble_file_to_bytes(filename: str, label_map: dict):
         elif opcode == Opcodes.MOVI.name:
             result.append(Opcodes.MOVI.value)
             result.append(get_register_addr_by_name(line[1]))
-            result.append(int(line[2], 0))
+            try:
+                result.append(int(line[2], 0))
+            except ValueError:
+                result.append(label_map[line[2]])
 
         elif opcode == Opcodes.PUSH.name:
             result.append(Opcodes.PUSH.value)
@@ -119,31 +146,63 @@ def assemble_file_to_bytes(filename: str, label_map: dict):
         elif opcode == Opcodes.CMP.name:
             result.append(Opcodes.CMP.value)
             result.append(get_register_addr_by_name(line[1]))
-            result.append(get_register_addr_by_name(line[2]))
+            try:
+                result.append(get_register_addr_by_name(line[2]))
+            except UnkownRegister:
+                result.append(label_map[line[2]])
 
         elif opcode == Opcodes.JMP.name:
             result.append(Opcodes.JMP.value)
             try:
-                result.append(int(line[1], 0))
+                addr = int(line[1], 0)
             except ValueError:
-                result.append(label_map[line[1]])
+                addr = label_map[line[1]]
+            result.append(addr & 0xFF)
+            result.append((addr >> 8) & 0xFF)
 
         elif opcode == Opcodes.JZ.name:
             result.append(Opcodes.JZ.value)
             try:
-                result.append(int(line[1], 0))
+                addr = int(line[1], 0)
             except ValueError:
-                result.append(label_map[line[1]])
+                addr = label_map[line[1]]
+            result.append(addr & 0xFF)
+            result.append((addr >> 8) & 0xFF)
 
         elif opcode == Opcodes.CALL.name:
             result.append(Opcodes.CALL.value)
             try:
-                result.append(int(line[1], 0))
+                addr = int(line[1], 0)
             except ValueError:
-                result.append(label_map[line[1]])
+                addr = label_map[line[1]]
+            result.append(addr & 0xFF)
+            result.append((addr >> 8) & 0xFF)
 
         elif opcode == Opcodes.RET.name:
             result.append(Opcodes.RET.value)
+
+        elif opcode == Opcodes.LOAD.name:
+            result.append(Opcodes.LOAD.value)
+            result.append(get_register_addr_by_name(line[1]))
+            try:
+                addr = int(line[2], 0)
+            except ValueError:
+                addr = label_map[line[2]]
+            result.append(addr & 0xFF)
+            result.append((addr >> 8) & 0xFF)
+
+        elif opcode == Opcodes.STORE.name:
+            result.append(Opcodes.STORE.value)
+
+            try:
+                addr = int(line[1], 0)
+            except ValueError:
+                addr = label_map[line[1]]
+
+            result.append(addr & 0xFF)
+            result.append((addr >> 8) & 0xFF)
+
+            result.append(get_register_addr_by_name(line[2]))
 
         elif opcode == Opcodes.SYSCALL.name:
             result.append(Opcodes.SYSCALL.value)
@@ -170,7 +229,7 @@ def assembler_to_bytes():
             if not line or line.startswith(";"):
                 continue
 
-            if line.startswith("INCLUDE"):
+            if line.startswith("INCLUDE") and line.endswith('.v8asm"'):
                 path = line.split(" ", 1)[1].strip().strip('"')
                 includes.append(path)
                 continue
@@ -206,10 +265,13 @@ def assembler_to_bytes():
     output_bytes.append(0xAD)
     # VERSION
     output_bytes.append(0x01)
-    # ENTRY
-    output_bytes.append(ENTRY)
-    # CODESIZE
-    output_bytes.append(len(result))
+    # ENTRY POINT (16-bit, little endian)
+    output_bytes.append(ENTRY & 0xFF)  # low byte
+    output_bytes.append((ENTRY >> 8) & 0xFF)  # high byte
+    # CODE SIZE (16-bit, little endian)
+    code_size = len(result)
+    output_bytes.append(code_size & 0xFF)
+    output_bytes.append((code_size >> 8) & 0xFF)
     # RESERVED
     output_bytes += bytes([0x00, 0x00, 0x00])
 
@@ -217,10 +279,21 @@ def assembler_to_bytes():
     with open(OUTPUT_FILE, "wb") as f:
         f.write(output_bytes)
 
-    hex_output = " ".join([f"{byte:02x}" for byte in output_bytes])
-    print(label_map)
-    print(ENTRY)
-    print(hex_output)
+    print("\n\033[1;32m✓ Assembly complete\033[0m")
+    print(f"\033[1;37mENTRY\033[0m   = 0x{ENTRY:04X}")
+    print(f"\033[1;37mCODESIZE\033[0m = {code_size} bytes\n")
+
+    print("\033[1;36mLabels:\033[0m")
+    for label, addr in sorted(label_map.items(), key=lambda x: x[1]):
+        print(f"  {label:<15} → 0x{addr:04X}")
+
+    print("\n\033[1;36mHex dump (first 64 bytes):\033[0m")
+    for i in range(0, min(len(output_bytes), 64), 8):
+        chunk = output_bytes[i : i + 8]
+        hex_chunk = " ".join(f"{b:02X}" for b in chunk)
+        print(f"  0x{i:04X}: {hex_chunk}")
+
+    print()
 
 
 if __name__ == "__main__":

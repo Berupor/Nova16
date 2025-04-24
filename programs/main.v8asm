@@ -2,9 +2,9 @@ ENTRY: main
 INCLUDE "lib/add_3.v8asm"
 
 main:
-    MOVI A, 5
+    MOVI R0, 5
     CALL add_3
-    MOVI B, 0x01
+    MOVI R1, 0x01
     SYSCALL     
 
     HLT

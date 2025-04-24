@@ -1,13 +1,31 @@
 
 #include "cpu.h"
+#include "debug.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-void kernel_print(CPU *cpu) { printf("%d\n", cpu->reg_a); }
+void kernel_print(CPU *cpu) {
+  if (DEBUG) {
+    printf("\033[1;36m[SYSCALL print]\033[0m %d\n", cpu->r0);
+    return;
+  }
+  printf("%d\n", cpu->r0);
+}
 
-void kernel_read(CPU *cpu) { scanf("%hhu", &cpu->reg_a); }
+void kernel_read(CPU *cpu) {
+  if (DEBUG) {
+    printf("\033[1;36m[SYSCALL read]\033[0m > ");
+  }
+  scanf("%hhu", &cpu->r0);
+}
 
 void kernel_exit(CPU *cpu) {
-  printf("Program exited with code %d\n", cpu->reg_a);
-  exit(cpu->reg_a);
+  if (DEBUG) {
+    printf("\033[1;36m[SYSCALL exit]\033[0m Program exited with code %d\n",
+           cpu->r0);
+  } else {
+    printf("Program exited with code %d\n", cpu->r0);
+  }
+
+  exit(cpu->r0);
 }

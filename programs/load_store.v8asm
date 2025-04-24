@@ -1,0 +1,7 @@
+ENTRY: main
+
+main:
+    MOVI R0, 42
+    STORE 0x6000, R0     ; heap start
+    LOAD R1, 0x6000
+    HLT
