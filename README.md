@@ -8,7 +8,7 @@ Virtual computing architecture with registers, heap, stack, syscalls and assembl
 - 64KB linear memory space (byte-addressable)
 - 256-byte stack with `PUSH`/`POP`/`CALL`/`RET`
 - Custom bytecode with 16-bit addressing (`MOV`, `ADD`, `JMP`, `LOAD`, `STORE`, ...)
-- Human-readable assembler (`.v8asm → .bin`)
+- Human-readable assembler (`.nova → .bin`)
 - Kernel with `SYSCALL` support (`print`, `read`, `exit`, …)
 - Modular segments: `TEXT`, `DATA`, `HEAP`, `STACK`
 
@@ -18,7 +18,7 @@ Virtual computing architecture with registers, heap, stack, syscalls and assembl
 assembler/     # Python-based assembler
 src/           # VM internals: CPU, memory, stack, kernel, etc.
 include/       # headers and ABI
-programs/      # test programs in .v8asm
+programs/      # test programs in .nova
 lib/           # reusable v8asm libs (heap, math, etc)
 documentation/ # ISA, syscalls, formats
 Taskfile.yml   # build & run automation
@@ -53,5 +53,4 @@ To understand and build a complete low-level system:
 - [Instruction Set](documentation/opcode_table.md)
 - [Syscall ABI](documentation/syscall_abi.md)
 - [Binary Format](documentation/binary_format.md)
-- [Register Convention](documentation/registers.md) 
-- [Architecture Overview](documentation/architecture.md)
+- [Register Convention](documentation/registers.md)
