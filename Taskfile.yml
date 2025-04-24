@@ -3,9 +3,8 @@ version: "3"
 tasks:
   run:
     silent: true
-    desc: Assembly .ASM, compiles C and launches
     cmds:
-      - python3 assembler/nova8asm.py programs/add_x_y.v8asm
+      - python3 assembler/nova.py
       - gcc -Iinclude src/*.c src/kernel/*.c -o _run_temp
       - ./_run_temp
 

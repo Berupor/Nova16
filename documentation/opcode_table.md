@@ -1,5 +1,7 @@
 # Instruction Set
 
+Nova16 uses a 16-bit address space (64K), 8-bit registers, and a fixed-width instruction encoding. All opcodes are 1 byte. Memory addresses are 2 bytes, little-endian ([lo][hi]). Immediate values and registers remain 8-bit.
+
 ## v0.1 (Basic Instruction Set)
 
 | Opcode | Name                   | Format                   | Description                                    |
@@ -31,10 +33,26 @@
 |--------|-----------|--------|----------------------------------------------------------------------------|
 | `0x70` | `SYSCALL` | `[OP]` | Triggers a system call. Syscall number in `B`, arguments and return in `A` |
 
-
 ## v0.4 (Memory)
 
 | Opcode | Name    | Format            | Description                       |
 |--------|---------|-------------------|-----------------------------------|
 | `0x60` | `LOAD`  | `[OP][reg][addr]` | Loads data from addr to register  |
 | `0x61` | `STORE` | `[OP][addr][reg]` | Writes data from register to addr |
+
+### v0.5 (Memory Access with 16-bit Addressing)
+
+| Opcode | Name    | Format              | Description                            |
+|--------|---------|---------------------|----------------------------------------|
+| `0x40` | `JMP`   | `[OP][lo][hi]`      | Unconditional jump to 16-bit address   |
+| `0x41` | `JZ`    | `[OP][lo][hi]`      | Jump to address if ZF == 1             |
+| `0x50` | `CALL`  | `[OP][lo][hi]`      | Call subroutine, pushes return address |
+| `0x51` | `RET`   | `[OP]`              | Return from subroutine                 |
+| `0x60` | `LOAD`  | `[OP][reg][lo][hi]` | Load from memory into register         |
+| `0x61` | `STORE` | `[OP][lo][hi][reg]` | Store value from register into memory  |
+
+### v0.6 (Syscalls)
+
+| Opcode | Name      | Format | Description                                                               |
+|--------|-----------|--------|---------------------------------------------------------------------------|
+| `0x70` | `SYSCALL` | `[OP]` | Trigger system call — syscall number in `R1`, argument and return in `R0` |

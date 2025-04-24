@@ -2,7 +2,7 @@ from enum import IntEnum
 from time import sleep
 
 
-INPUT_FILE = "./programs/load_store.v8asm"
+INPUT_FILE = "./programs/load_store.nova"
 
 OUTPUT_FILE = "./bin/program.bin"
 
@@ -60,11 +60,11 @@ def create_label_map(files: list[str]):
 
         for line in f:
             line = line.strip()
-            if line.startswith("INCLUDE") and line.endswith('.v8inc"'):
+            if line.startswith("INCLUDE") and line.endswith('.novainc"'):
                 path = line.split(" ", 1)[1].strip().strip('"')
 
                 with open(path, "r") as f_2:
-                    # сброка .v8inc
+                    # сброка .novainc
                     lines_2 = f_2.readlines()
                     for line_2 in lines_2:
                         line_2 = line_2.replace(" ", "").split("=")
@@ -229,7 +229,7 @@ def assembler_to_bytes():
             if not line or line.startswith(";"):
                 continue
 
-            if line.startswith("INCLUDE") and line.endswith('.v8asm"'):
+            if line.startswith("INCLUDE") and line.endswith('.nova"'):
                 path = line.split(" ", 1)[1].strip().strip('"')
                 includes.append(path)
                 continue
