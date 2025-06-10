@@ -50,9 +50,3 @@ Nova16 uses a 16-bit address space (64K), 8-bit registers, and a fixed-width ins
 | `0x51` | `RET`   | `[OP]`              | Return from subroutine                 |
 | `0x60` | `LOAD`  | `[OP][reg][lo][hi]` | Load from memory into register         |
 | `0x61` | `STORE` | `[OP][lo][hi][reg]` | Store value from register into memory  |
-
-### v0.6 (Syscalls)
-
-| Opcode | Name      | Format | Description                                                               |
-|--------|-----------|--------|---------------------------------------------------------------------------|
-| `0x70` | `SYSCALL` | `[OP]` | Trigger system call — syscall number in `R1`, argument and return in `R0` |
