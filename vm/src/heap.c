@@ -6,12 +6,10 @@
 #define FREE_FLAG 0
 #define OCCUPIED_FLAG 1
 
-// ANSI цвета
-#define COLOR_USED "\x1b[31m" // Красный
-#define COLOR_FREE "\x1b[32m" // Зелёный
+#define COLOR_USED "\x1b[31m"
+#define COLOR_FREE "\x1b[32m"
 #define COLOR_RESET "\x1b[0m"
 
-// TODO: добавить пару коментов логики
 // uint16_t heap_alloc(Memory *memory, uint16_t size) {
 //   uint16_t current_point = HEAP_START;
 
@@ -38,11 +36,9 @@
 //     }
 //   }
 
-//   // TODO: Константа?
 //   return 0x00;
 // }
 
-// // TODO: Добавить склеивание слева?
 // void heap_free(Memory *memory, uint16_t ptr) {
 //   uint16_t header_ptr = ptr - 2;
 
