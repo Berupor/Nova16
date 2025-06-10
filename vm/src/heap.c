@@ -10,6 +10,8 @@
 #define COLOR_FREE "\x1b[32m"
 #define COLOR_RESET "\x1b[0m"
 
+// TODO: ☠️ rewrite to 16 bit
+
 // uint16_t heap_alloc(Memory *memory, uint16_t size) {
 //   uint16_t current_point = HEAP_START;
 
@@ -44,7 +46,6 @@
 
 //   mem_write(memory, header_ptr, FREE_FLAG);
 
-//   // Начинаем склеивать
 //   uint8_t block_is_occupied = mem_read(memory, header_ptr);
 //   uint8_t block_size = mem_read(memory, header_ptr + 1);
 
