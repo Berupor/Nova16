@@ -1,11 +1,11 @@
-# Nova8 Library
+# Nova16 Library
 
-This folder contains reusable low-level subroutines written in `v8asm`.
+This folder contains reusable low-level subroutines written in Nova16 assembly (`.nova`).
 
 These are small, self-contained routines that can be *included* and *called* from any program, similar to how standard libraries work in real operating systems.
 
 > Think of this like the `.text` section in a real binary that contains helper functions such as `memcpy`, `strlen`, or `malloc`.  
-> Just like `libc` provides common utilities in Linux, this `lib/` folder is your standard library for Nova8.
+> Just like `libc` provides common utilities in Linux, this `lib/` folder is your standard library for Nova16.
 
 ## Structure
 
@@ -18,14 +18,14 @@ Compiled `.bin` versions are placed into `bin/lib/*.bin` and can be directly `IN
 
 ## How to Use
 
-In `.v8asm` file:
+In `.nova` file:
 
 ```asm
 ENTRY: main
-INCLUDE "lib/add_3.v8asm"
+INCLUDE "lib/add_3.nova"
 
 main:
-    MOVI A, 5
+    MOVI R0, 5
     CALL add_3
-    ; A now contains 8
+    ; R0 now contains 8
 ```

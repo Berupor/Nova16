@@ -15,12 +15,13 @@ Virtual computing architecture with registers, heap, stack, syscalls and assembl
 ## Project structure
 
 ```
-assembler/     # Python-based assembler
-src/           # VM internals: CPU, memory, stack, kernel, etc.
-include/       # headers and ABI
-programs/      # test programs in .nova
+assembler/     # Go-based assembler producing .bin files
+vm/            # C virtual machine implementation
+programs/      # example Nova16 programs and libraries
 lib/           # reusable v8asm libs (heap, math, etc)
-documentation/ # ISA, syscalls, formats
+documentation/ # ISA, syscalls, binary format
+tests/         # automated test suite
+
 Taskfile.yml   # build & run automation
 ```
 
