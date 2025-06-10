@@ -80,6 +80,7 @@ int main(int argc, char *argv[]) {
   cpu.pc = entry_point;
 
   if (DEBUG_ENABLED) {
+    printf("\n\033[1;34m=== Nova VM Output ===\033[0m\n");
     printf("\033[1;32m✓ Program loaded successfully\033[0m\n");
     printf("ENTRY POINT: 0x%04X\n", cpu.pc);
     printf("Starting execution...\n\n");

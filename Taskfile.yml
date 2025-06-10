@@ -2,29 +2,14 @@ version: "3"
 
 tasks:
   run:
-    desc: Assemble and run a nova program. task run FILE=./programs/main.nova DEBUG_FLAG
-    example: task run FILE=./programs/main.nova DEBUG=true
+    desc: Assemble and run a nova program
+    example: task run INPUT=./programs/main.nova OUTPUT=./bin/program.bin DEBUG=true
     silent: true
     vars:
-      FILE: '{{.FILE | default "./programs/main.nova"}}'
-      OUTPUT: '{{(splitList "/" .FILE | last | replace ".nova" ".bin")}}'
+      INPUT: "{{.INPUT}}"
+      OUTPUT: "{{.OUTPUT}}"
       DEBUG_FLAG: '{{if eq .DEBUG "true"}}--debug{{end}}'
     cmds:
-      - python3 assembler/src/asm/__init__.py {{.FILE}} --output=./bin/{{.OUTPUT}} {{.DEBUG_FLAG}}
-      - gcc -Iinclude src/*.c src/kernel/*.c -o _run_temp
-      - ./_run_temp ./bin/{{.OUTPUT}} {{.DEBUG_FLAG}}
-
-  crun:
-    silent: true
-    desc: Launches the processor
-    cmds:
-      - gcc -Iinclude src/*.c src/kernel/*.c -o _run_temp
-      - ./_run_temp ./bin/program.bin --debug
-
-  build:
-    silent: true
-    desc: ...
-    vars:
-      ENV: "{{.BINARY}}"
-    cmds:
-      - gcc -Iinclude src/*.c src/kernel/*.c -o {{.BINARY}}
+      - cd assembler && go run ./cmd/assembler/main.go -input ../{{.INPUT}} -output ../{{.OUTPUT}} {{.DEBUG_FLAG}}
+      - gcc -Ivm/include -Ivm/include/kernel vm/src/*.c vm/src/kernel/*.c -o _run_temp
+      - ./_run_temp {{.OUTPUT}} {{.DEBUG_FLAG}}
