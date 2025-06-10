@@ -1,0 +1,7 @@
+{
+  "expect": {
+    "registers": {
+      "R0": 9
+    }
+  }
+}

@@ -35,7 +35,7 @@ void run(CPU *cpu) {
 
   while (running) {
     uint8_t opcode = fetch8(cpu);
-    if (DEBUG) {
+    if (DEBUG_ENABLED) {
       uint16_t pc_before = cpu->pc;
       debug_trace_opcode(cpu, opcode, pc_before);
     }
@@ -163,7 +163,9 @@ void run(CPU *cpu) {
 
     case JZ: {
       uint16_t jmp_addr = fetch16(cpu);
-
+      if (DEBUG_ENABLED) {
+        printf("[DEBUG] JZ to 0x%04X (ZF=%d)\n", jmp_addr, cpu->zf);
+      }
       if (cpu->zf == 1) {
         cpu->pc = jmp_addr;
       }

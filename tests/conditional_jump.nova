@@ -1,0 +1,13 @@
+ENTRY: main
+
+main:
+    MOVI R0, 10
+    MOVI R1, 10
+    CMP R0, R1
+    JZ equal
+    MOVI R0, 0
+    HLT
+
+equal:
+    MOVI R0, 123
+    HLT

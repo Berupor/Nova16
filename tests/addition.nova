@@ -1,0 +1,7 @@
+ENTRY: main
+
+main:
+    MOVI R0, 4
+    MOVI R1, 5
+    ADD R0, R1
+    HLT

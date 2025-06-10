@@ -4,5 +4,6 @@ bin
 testing
 .vscode
 .DS_Store
+venv
 
 documentation/heap.md

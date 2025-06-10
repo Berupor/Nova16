@@ -14,7 +14,10 @@
 #define SIZE_LO 5
 #define SIZE_HI 6
 
+const char *binary_path = NULL;
+
 void load_binary(const char *path, CPU *cpu, uint16_t *entry_point) {
+
   FILE *f = fopen(path, "rb");
   if (!f) {
     perror("File open failed");
@@ -50,17 +53,33 @@ void load_binary(const char *path, CPU *cpu, uint16_t *entry_point) {
   fclose(f);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--trace-json") == 0) {
+      TRACE_JSON_ENABLED = 1;
+    } else if (strcmp(argv[i], "--debug") == 0) {
+      DEBUG_ENABLED = 1;
+    } else if (!binary_path) {
+      binary_path = argv[i];
+    }
+  }
+
+  if (!binary_path) {
+    fprintf(stderr, "Usage: %s <program.novabin> [--debug] [--trace-json]\n",
+            argv[0]);
+    return 1;
+  }
+
   CPU cpu = {0};
   Memory mem = {0};
   cpu.sp = STACK_SIZE;
   cpu.memory = &mem;
 
   uint16_t entry_point = 0;
-  load_binary("bin/program.bin", &cpu, &entry_point);
+  load_binary(binary_path, &cpu, &entry_point);
   cpu.pc = entry_point;
 
-  if (DEBUG) {
+  if (DEBUG_ENABLED) {
     printf("\033[1;32m✓ Program loaded successfully\033[0m\n");
     printf("ENTRY POINT: 0x%04X\n", cpu.pc);
     printf("Starting execution...\n\n");
@@ -68,7 +87,11 @@ int main() {
 
   run(&cpu);
 
-  if (DEBUG) {
+  if (TRACE_JSON_ENABLED) {
+    json_dump_state(&cpu);
+  }
+
+  if (DEBUG_ENABLED) {
     debug_print_cpu(&cpu);
   };
 
