@@ -1,8 +1,8 @@
 package parser
 
 import (
+	"assembler/lexer"
 	"fmt"
-	"nova_asm/lexer"
 	"strings"
 )
 

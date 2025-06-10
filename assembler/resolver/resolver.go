@@ -1,10 +1,10 @@
 package resolver
 
 import (
+	"assembler/codes"
+	"assembler/linker"
+	"assembler/parser"
 	"fmt"
-	"nova_asm/codes"
-	"nova_asm/linker"
-	"nova_asm/parser"
 	"strconv"
 	"strings"
 )

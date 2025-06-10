@@ -1,10 +1,10 @@
 package emitter
 
 import (
+	"assembler/codes"
+	"assembler/parser"
+	"assembler/resolver"
 	"fmt"
-	"nova_asm/codes"
-	"nova_asm/parser"
-	"nova_asm/resolver"
 	"strconv"
 )
 

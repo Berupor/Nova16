@@ -1,9 +1,9 @@
 package linker
 
 import (
+	"assembler/lexer"
+	"assembler/parser"
 	"fmt"
-	"nova_asm/lexer"
-	"nova_asm/parser"
 	"os"
 	"path/filepath"
 	"strings"

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"nova_asm/emitter"
-	"nova_asm/lexer"
-	"nova_asm/linker"
-	"nova_asm/parser"
-	"nova_asm/resolver"
+	"assembler/emitter"
+	"assembler/lexer"
+	"assembler/linker"
+	"assembler/parser"
+	"assembler/resolver"
 
 	"os"
 	"strings"
