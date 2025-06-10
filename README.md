@@ -18,7 +18,7 @@ Virtual computing architecture with registers, heap, stack, syscalls and assembl
 assembler/     # Go-based assembler producing .bin files
 vm/            # C virtual machine implementation
 programs/      # example Nova16 programs and libraries
-lib/           # reusable v8asm libs (heap, math, etc)
+lib/           # reusable libs (heap, math, etc)
 documentation/ # ISA, syscalls, binary format
 tests/         # automated test suite
 
